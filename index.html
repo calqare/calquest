@@ -1573,6 +1573,49 @@ visibility:hidden;
 pointer-events:none;
 }
 
+.rules-view-scroll{
+max-height:none;
+padding:14px 16px;
+border-radius:8px;
+font-size:13.5px;
+line-height:1.55;
+background:#f8fafc;
+border:1px solid #e2e8f0;
+color:#334155;
+}
+
+.rules-view-scroll h2{
+font-size:15px;
+color:#2563eb;
+margin:16px 0 6px;
+}
+
+.rules-view-scroll h2:first-child{
+margin-top:0;
+}
+
+.rules-view-scroll p{
+margin-bottom:8px;
+}
+
+.rules-view-scroll ul{
+margin:6px 0 10px 18px;
+}
+
+.rules-view-scroll li{
+margin-bottom:4px;
+}
+
+body.dark-mode .rules-view-scroll{
+background:rgba(15,23,42,.7);
+border:1px solid rgba(96,165,250,.25);
+color:#cbd5e1;
+}
+
+body.dark-mode .rules-view-scroll h2{
+color:#60a5fa;
+}
+
 </style>
 </head>
 
@@ -1603,6 +1646,7 @@ style="width:100%;padding:8px">
 <div class="topic" onclick="achievements();closeMenu()">🏅 Achievements</div>
 <div class="topic" onclick="shadowArmy();closeMenu()">🗡️ Shadow Army</div>
 <div class="topic" onclick="shadowReviewer();closeMenu()">🌌 Shadow Reviewer</div>
+<div class="topic" onclick="viewRules();closeMenu()">📜 Rules & Regulations</div>
 
 <div class="tree-parent"
 onclick="toggleTree('mathTree')">
@@ -5220,6 +5264,98 @@ gate.innerHTML=`
 `;
 
 document.body.appendChild(gate);
+}
+
+function viewRules(){
+isRetakeMode=false;
+app.innerHTML=`
+<div class="card" style="max-width:800px;margin:0 auto;">
+<h2 style="margin-bottom:4px;">📜 CALQUEST Rules and Regulations</h2>
+<p style="font-size:13px;margin-bottom:16px;opacity:.75;">CALQUEST – Your CE Terms Companion · Personal use only</p>
+
+<div class="rules-view-scroll">
+<p>By purchasing, accessing, or using CALQUEST, you agree to comply with the following Rules and Regulations. These rules are established to protect the CALQUEST system, its content, and the rights of all legitimate users.</p>
+
+<h2>1. PERSONAL USE ONLY</h2>
+<p>CALQUEST is provided strictly for the personal use of the registered purchaser.</p>
+<p>The account and its contents are intended solely for the user's personal Civil Engineering review, study, and reference.</p>
+<p>Sharing access with other individuals is strictly prohibited.</p>
+
+<h2>2. NON-TRANSFERABLE ACCOUNT</h2>
+<p>Your CALQUEST access is personal and non-transferable.</p>
+<p>You are not allowed to:</p>
+<ul>
+<li>Give your account to another person;</li>
+<li>Lend or transfer your account;</li>
+<li>Sell or donate your remaining access;</li>
+<li>Allow another person to use your account; or</li>
+<li>Change account ownership for the purpose of transferring access.</li>
+</ul>
+<p>Each user must obtain their own CALQUEST access.</p>
+
+<h2>3. NO ACCOUNT SHARING</h2>
+<p>Sharing your username, password, access link, or other credentials with another person is strictly prohibited.</p>
+<p>If CALQARE determines that an account is being accessed or used by multiple individuals, the account may be suspended or permanently terminated without refund.</p>
+
+<h2>4. NO RESELLING OR PROFITING</h2>
+<p>CALQUEST is not allowed to be used for personal or commercial profit.</p>
+<p>Users are strictly prohibited from selling, renting, sublicensing, or otherwise providing CALQUEST access or materials to another person in exchange for money or any other form of compensation.</p>
+<p>This includes using CALQUEST materials as part of a paid review program, tutorial service, review center, or other commercial activity without written authorization from CALQARE.</p>
+
+<h2>5. NO COPYING OR DISTRIBUTION</h2>
+<p>The contents of CALQUEST are intended exclusively for the registered user.</p>
+<p>Users are prohibited from copying, reproducing, photographing, screenshotting, screen-recording, extracting, uploading, distributing, or sharing CALQUEST content with others.</p>
+<p>This includes sharing content through Facebook or Messenger, Telegram, Discord, Google Drive, Email, group chats, social media, or any other platform or method.</p>
+
+<h2>6. PROTECTION OF CALQUEST MATERIALS</h2>
+<p>CALQUEST contains proprietary educational materials, databases, questions, explanations, terminology, and other content developed or compiled for the CALQUEST platform.</p>
+<p>Users are expected to respect and protect these materials from unauthorized reproduction, distribution, or commercial use.</p>
+
+<h2>7. NO UNAUTHORIZED COMMERCIAL USE</h2>
+<p>Users may use CALQUEST to improve their own knowledge and prepare for the Civil Engineering Licensure Examination.</p>
+<p>However, users may not use CALQUEST or its materials to teach, train, review, tutor, or provide paid services to other individuals without prior written permission from CALQARE.</p>
+
+<h2>8. ACCESS ENDS UPON BECOMING A LICENSED CIVIL ENGINEER</h2>
+<p>CALQUEST is intended primarily as a Civil Engineering Licensure Examination review and preparation tool.</p>
+<p>Therefore, access to CALQUEST shall end once the user becomes a Licensed/Registered Civil Engineer.</p>
+<p>The remaining access cannot be transferred, sold, donated, or assigned to another person after the user becomes licensed.</p>
+
+<h2>9. NO REFUND DUE TO LICENSE TERMINATION</h2>
+<p>Because CALQUEST is a digital product, payments are generally non-refundable.</p>
+<p>Becoming a Licensed Civil Engineer does not entitle the user to a refund for any remaining access period.</p>
+
+<h2>10. VIOLATION OF RULES</h2>
+<p>Any violation of these Rules and Regulations may result in:</p>
+<ul>
+<li>Temporary suspension of access;</li>
+<li>Permanent termination of access;</li>
+<li>Removal of the user's account from CALQUEST; and/or</li>
+<li>Other appropriate action deemed necessary by CALQARE.</li>
+</ul>
+<p>Users whose access is terminated due to violation of these rules shall not be entitled to a refund.</p>
+
+<h2>11. DO NOT SHARE YOUR ACCESS TO “HELP” OTHERS</h2>
+<p>Providing your CALQUEST account or materials to another person, even if the intention is to help a fellow Civil Engineering student or examinee, is still considered unauthorized sharing.</p>
+<p>If someone needs CALQUEST, they should obtain their own legitimate access.</p>
+
+<h2>12. RESPONSIBILITY OF THE USER</h2>
+<p>Users are responsible for keeping their account information secure and for ensuring that their account is not accessed or used by unauthorized individuals.</p>
+<p>If you suspect that someone has obtained unauthorized access to your account, report it to CALQARE immediately.</p>
+
+<h2>13. FAIR USE</h2>
+<p>CALQUEST is created to help Civil Engineering examinees prepare for their examination.</p>
+<p>We ask every user to respect the effort, time, and resources invested in developing CALQUEST by using the platform honestly and responsibly.</p>
+<p><strong>One purchase = One user.<br>One account = One registered user.<br>Personal use only. No sharing. No reselling. No unauthorized distribution.</strong></p>
+
+<h2>14. AGREEMENT TO THE RULES</h2>
+<p>By purchasing or accessing CALQUEST, you acknowledge that you have read, understood, and agreed to follow these Rules and Regulations.</p>
+<p>CALQARE reserves the right to update these rules when necessary to protect the platform, its users, and its proprietary materials.</p>
+<p>Thank you for respecting CALQUEST and helping us maintain a fair and secure review environment for everyone.</p>
+</div>
+
+<button class="btn-next" style="margin-top:16px;" onclick="home()">⬅️ Back to Dashboard</button>
+</div>
+`;
 }
 
 function bootApp(){
