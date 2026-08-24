@@ -1389,6 +1389,190 @@ label.choice,
 text-align:initial;
 }
 
+/* ===== RULES & REGULATIONS GATE ===== */
+.rules-gate-overlay{
+position:fixed;
+inset:0;
+z-index:10000;
+background:radial-gradient(circle at 50% 20%,#0f172a,#020617 70%);
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:flex-start;
+overflow:auto;
+padding:24px 16px 40px;
+}
+
+.rules-gate-card{
+width:100%;
+max-width:720px;
+background:#0b1220;
+border:1px solid #3b82f6;
+border-radius:12px;
+box-shadow:0 0 24px rgba(59,130,246,.35),inset 0 0 30px rgba(37,99,235,.06);
+padding:28px 24px 24px;
+color:#e2e8f0;
+animation:slFadeIn .4s ease-out;
+}
+
+.rules-gate-card h1{
+font-size:22px;
+color:#f8fafc;
+margin-bottom:4px;
+text-align:center;
+}
+
+.rules-gate-card .rules-tagline{
+text-align:center;
+color:#93c5fd;
+font-size:13px;
+margin-bottom:18px;
+}
+
+.rules-scroll{
+max-height:min(58vh,520px);
+overflow:auto;
+padding:12px 14px;
+background:rgba(15,23,42,.7);
+border:1px solid rgba(96,165,250,.25);
+border-radius:8px;
+font-size:13.5px;
+line-height:1.55;
+color:#cbd5e1;
+}
+
+.rules-scroll h2{
+font-size:15px;
+color:#60a5fa;
+margin:16px 0 6px;
+}
+
+.rules-scroll h2:first-child{
+margin-top:0;
+}
+
+.rules-scroll p{
+margin-bottom:8px;
+text-align:justify;
+}
+
+.rules-scroll ul{
+margin:6px 0 10px 18px;
+}
+
+.rules-scroll li{
+margin-bottom:4px;
+}
+
+.rules-agree-row{
+margin-top:18px;
+display:flex;
+align-items:flex-start;
+gap:10px;
+padding:12px;
+background:rgba(30,58,138,.2);
+border:1px solid rgba(96,165,250,.35);
+border-radius:8px;
+cursor:pointer;
+user-select:none;
+}
+
+.rules-agree-row input{
+margin-top:3px;
+width:18px;
+height:18px;
+accent-color:#3b82f6;
+cursor:pointer;
+flex-shrink:0;
+}
+
+.rules-agree-row span{
+font-size:14px;
+color:#e0f2fe;
+line-height:1.4;
+}
+
+.rules-actions{
+margin-top:18px;
+display:flex;
+flex-wrap:wrap;
+gap:12px;
+justify-content:center;
+}
+
+.rules-btn-accept{
+padding:14px 28px;
+font-size:16px;
+font-weight:700;
+border:none;
+border-radius:10px;
+background:#2563eb;
+color:#fff;
+cursor:pointer;
+box-shadow:0 2px 8px rgba(37,99,235,.4);
+transition:.15s;
+}
+
+.rules-btn-accept:hover:not(:disabled){
+background:#1d4ed8;
+transform:translateY(-1px);
+}
+
+.rules-btn-accept:disabled{
+opacity:.45;
+cursor:not-allowed;
+transform:none;
+}
+
+.rules-btn-decline{
+padding:14px 28px;
+font-size:16px;
+font-weight:700;
+border:1px solid #64748b;
+border-radius:10px;
+background:transparent;
+color:#94a3b8;
+cursor:pointer;
+transition:.15s;
+}
+
+.rules-btn-decline:hover{
+background:rgba(100,116,139,.2);
+color:#e2e8f0;
+}
+
+.rules-blocked{
+text-align:center;
+padding:40px 20px;
+}
+
+.rules-blocked h2{
+color:#f87171;
+margin-bottom:12px;
+}
+
+.rules-blocked p{
+color:#94a3b8;
+margin-bottom:18px;
+line-height:1.5;
+}
+
+.rules-footer-note{
+margin-top:16px;
+text-align:center;
+font-size:11px;
+color:#64748b;
+}
+
+body.rules-locked .sidebar,
+body.rules-locked .main,
+body.rules-locked .menu-btn,
+body.rules-locked .watermark,
+body.rules-locked .watermark-author{
+visibility:hidden;
+pointer-events:none;
+}
+
 </style>
 </head>
 
@@ -4891,7 +5075,162 @@ ${shadowBanner}
 }
 }
 
+// ===== Rules & Regulations gate =====
+// Progress (xp, answered, mistakes, shadows, etc.) is never cleared by this gate.
+// Only a one-time acceptance flag is stored; existing data remains untouched.
+const RULES_ACCEPTED_KEY='cq_rules_accepted_v1';
+
+function hasAcceptedRules(){
+return safeGet(RULES_ACCEPTED_KEY)==='1';
+}
+
+function acceptRules(){
+const cb=document.getElementById('rulesAgreeCheck');
+if(!cb||!cb.checked){
+alert('Please check the box to confirm that you have read and agree to the Rules and Regulations.');
+return;
+}
+safeSet(RULES_ACCEPTED_KEY,'1');
+flashSaveStatus('✓ Agreement saved');
+const gate=document.getElementById('rulesGate');
+if(gate) gate.remove();
+document.body.classList.remove('rules-locked');
 landingPage();
+}
+
+function declineRules(){
+const gate=document.getElementById('rulesGate');
+if(!gate) return;
+gate.innerHTML=`
+<div class="rules-gate-card rules-blocked">
+<h2>Access Denied</h2>
+<p>You must agree to the CALQUEST Rules and Regulations to use this application.<br>
+Your existing progress (if any) has been preserved and will still be available if you accept later.</p>
+<button class="rules-btn-accept" onclick="showRulesGate()">Review Rules Again</button>
+</div>
+`;
+}
+
+function showRulesGate(){
+document.body.classList.add('rules-locked');
+
+let gate=document.getElementById('rulesGate');
+if(gate) gate.remove();
+
+gate=document.createElement('div');
+gate.id='rulesGate';
+gate.className='rules-gate-overlay';
+gate.innerHTML=`
+<div class="rules-gate-card">
+<h1>📜 CALQUEST Rules and Regulations</h1>
+<div class="rules-tagline">CALQUEST – Your CE Terms Companion</div>
+
+<div class="rules-scroll">
+<p>By purchasing, accessing, or using CALQUEST, you agree to comply with the following Rules and Regulations. These rules are established to protect the CALQUEST system, its content, and the rights of all legitimate users.</p>
+
+<h2>1. PERSONAL USE ONLY</h2>
+<p>CALQUEST is provided strictly for the personal use of the registered purchaser.</p>
+<p>The account and its contents are intended solely for the user's personal Civil Engineering review, study, and reference.</p>
+<p>Sharing access with other individuals is strictly prohibited.</p>
+
+<h2>2. NON-TRANSFERABLE ACCOUNT</h2>
+<p>Your CALQUEST access is personal and non-transferable.</p>
+<p>You are not allowed to:</p>
+<ul>
+<li>Give your account to another person;</li>
+<li>Lend or transfer your account;</li>
+<li>Sell or donate your remaining access;</li>
+<li>Allow another person to use your account; or</li>
+<li>Change account ownership for the purpose of transferring access.</li>
+</ul>
+<p>Each user must obtain their own CALQUEST access.</p>
+
+<h2>3. NO ACCOUNT SHARING</h2>
+<p>Sharing your username, password, access link, or other credentials with another person is strictly prohibited.</p>
+<p>If CALQARE determines that an account is being accessed or used by multiple individuals, the account may be suspended or permanently terminated without refund.</p>
+
+<h2>4. NO RESELLING OR PROFITING</h2>
+<p>CALQUEST is not allowed to be used for personal or commercial profit.</p>
+<p>Users are strictly prohibited from selling, renting, sublicensing, or otherwise providing CALQUEST access or materials to another person in exchange for money or any other form of compensation.</p>
+<p>This includes using CALQUEST materials as part of a paid review program, tutorial service, review center, or other commercial activity without written authorization from CALQARE.</p>
+
+<h2>5. NO COPYING OR DISTRIBUTION</h2>
+<p>The contents of CALQUEST are intended exclusively for the registered user.</p>
+<p>Users are prohibited from copying, reproducing, photographing, screenshotting, screen-recording, extracting, uploading, distributing, or sharing CALQUEST content with others.</p>
+<p>This includes sharing content through Facebook or Messenger, Telegram, Discord, Google Drive, Email, group chats, social media, or any other platform or method.</p>
+
+<h2>6. PROTECTION OF CALQUEST MATERIALS</h2>
+<p>CALQUEST contains proprietary educational materials, databases, questions, explanations, terminology, and other content developed or compiled for the CALQUEST platform.</p>
+<p>Users are expected to respect and protect these materials from unauthorized reproduction, distribution, or commercial use.</p>
+
+<h2>7. NO UNAUTHORIZED COMMERCIAL USE</h2>
+<p>Users may use CALQUEST to improve their own knowledge and prepare for the Civil Engineering Licensure Examination.</p>
+<p>However, users may not use CALQUEST or its materials to teach, train, review, tutor, or provide paid services to other individuals without prior written permission from CALQARE.</p>
+
+<h2>8. ACCESS ENDS UPON BECOMING A LICENSED CIVIL ENGINEER</h2>
+<p>CALQUEST is intended primarily as a Civil Engineering Licensure Examination review and preparation tool.</p>
+<p>Therefore, access to CALQUEST shall end once the user becomes a Licensed/Registered Civil Engineer.</p>
+<p>The remaining access cannot be transferred, sold, donated, or assigned to another person after the user becomes licensed.</p>
+
+<h2>9. NO REFUND DUE TO LICENSE TERMINATION</h2>
+<p>Because CALQUEST is a digital product, payments are generally non-refundable.</p>
+<p>Becoming a Licensed Civil Engineer does not entitle the user to a refund for any remaining access period.</p>
+
+<h2>10. VIOLATION OF RULES</h2>
+<p>Any violation of these Rules and Regulations may result in:</p>
+<ul>
+<li>Temporary suspension of access;</li>
+<li>Permanent termination of access;</li>
+<li>Removal of the user's account from CALQUEST; and/or</li>
+<li>Other appropriate action deemed necessary by CALQARE.</li>
+</ul>
+<p>Users whose access is terminated due to violation of these rules shall not be entitled to a refund.</p>
+
+<h2>11. DO NOT SHARE YOUR ACCESS TO “HELP” OTHERS</h2>
+<p>Providing your CALQUEST account or materials to another person, even if the intention is to help a fellow Civil Engineering student or examinee, is still considered unauthorized sharing.</p>
+<p>If someone needs CALQUEST, they should obtain their own legitimate access.</p>
+
+<h2>12. RESPONSIBILITY OF THE USER</h2>
+<p>Users are responsible for keeping their account information secure and for ensuring that their account is not accessed or used by unauthorized individuals.</p>
+<p>If you suspect that someone has obtained unauthorized access to your account, report it to CALQARE immediately.</p>
+
+<h2>13. FAIR USE</h2>
+<p>CALQUEST is created to help Civil Engineering examinees prepare for their examination.</p>
+<p>We ask every user to respect the effort, time, and resources invested in developing CALQUEST by using the platform honestly and responsibly.</p>
+<p><strong>One purchase = One user.<br>One account = One registered user.<br>Personal use only. No sharing. No reselling. No unauthorized distribution.</strong></p>
+
+<h2>14. AGREEMENT TO THE RULES</h2>
+<p>By purchasing or accessing CALQUEST, you acknowledge that you have read, understood, and agreed to follow these Rules and Regulations.</p>
+<p>CALQARE reserves the right to update these rules when necessary to protect the platform, its users, and its proprietary materials.</p>
+<p>Thank you for respecting CALQUEST and helping us maintain a fair and secure review environment for everyone.</p>
+</div>
+
+<label class="rules-agree-row" for="rulesAgreeCheck">
+<input type="checkbox" id="rulesAgreeCheck" onchange="document.getElementById('rulesAcceptBtn').disabled=!this.checked">
+<span>I have read, understood, and agree to the CALQUEST Rules and Regulations. I will use this platform for personal study only and will not share, resell, or distribute its contents.</span>
+</label>
+
+<div class="rules-actions">
+<button id="rulesAcceptBtn" class="rules-btn-accept" disabled onclick="acceptRules()">✅ I Agree — Continue</button>
+<button class="rules-btn-decline" onclick="declineRules()">✕ I Do Not Agree</button>
+</div>
+
+<div class="rules-footer-note">Your progress (XP, scores, shadows, mistakes) is never erased by this agreement screen.</div>
+</div>
+`;
+
+document.body.appendChild(gate);
+}
+
+function bootApp(){
+if(hasAcceptedRules()){
+landingPage();
+}else{
+showRulesGate();
+}
+}
+
+bootApp();
 
 </script>
 
